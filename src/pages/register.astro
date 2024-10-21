@@ -8,7 +8,7 @@ import AuthLayout from "@/layout/AuthLayout.astro";
             <div class="mb-4">
                 <h3 class="font-semibold text-2xl text-gray-800">Register</h3>
             </div>
-            <div class="space-y-5">
+            <form class="space-y-5">
                 <div class="space-y-2">
                     <label
                         class="text-sm font-medium text-gray-700 tracking-wide"
@@ -17,6 +17,7 @@ import AuthLayout from "@/layout/AuthLayout.astro";
                     <input
                         class="w-full text-base px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-400"
                         type="text"
+                        name="name"
                         placeholder="Varela"
                     />
                 </div>
@@ -28,6 +29,7 @@ import AuthLayout from "@/layout/AuthLayout.astro";
                     <input
                         class="w-full text-base px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-400"
                         type="text"
+                        name="email"
                         placeholder="mail@gmail.com"
                     />
                 </div>
@@ -38,7 +40,8 @@ import AuthLayout from "@/layout/AuthLayout.astro";
                         Password
                     </label>
                     <input
-                        class="w-full content-center text-base px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-400"
+                    name="password"
+                        class="w-full disabled:bg-gray-400 disabled:cursor-not-allowed content-center text-base px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-400"
                         type="text"
                         placeholder="Enter your password"
                     />
@@ -55,7 +58,7 @@ import AuthLayout from "@/layout/AuthLayout.astro";
                             for="remember_me"
                             class="ml-2 block text-sm text-gray-800"
                         >
-                            Remember me
+                            Recuerdame
                         </label>
                     </div>
                     <div class="text-sm">
@@ -63,24 +66,49 @@ import AuthLayout from "@/layout/AuthLayout.astro";
                             href="/login"
                             class="text-blue-400 hover:text-blue-500"
                         >
-                            Login
+                            Ya tienes cuenta?
                         </a>
                     </div>
                 </div>
                 <div>
                     <button
                         type="submit"
-                        class="w-full flex justify-center bg-blue-400 hover:bg-blue-500 text-gray-100 p-3 rounded-full tracking-wide font-semibold shadow-lg cursor-pointer transition ease-in duration-500"
+                        id="btnsubmit"
+                        class="w-full flex 
+                        justify-center disabled:bg-gray-500 bg-blue-500 hover:bg-blue-600 text-gray-100 p-3 rounded-full tracking-wide font-semibold shadow-lg cursor-pointer transition ease-in duration-500"
                     >
                         Sign in
                     </button>
                 </div>
-            </div>
+            </form>
             <div class="pt-5 text-center text-gray-400 text-xs">
                 <span>
                     Copyright {new Date().getFullYear()}
                 </span>
             </div>
         </div>
-    </div></AuthLayout
->
+    </div></AuthLayout>
+
+    <script>
+import { actions } from "astro:actions";
+
+        const form = document.querySelector("form") as HTMLFormElement;
+        
+        const btnSubmit = document.querySelector("#btnsubmit") as HTMLButtonElement;        
+        form.addEventListener("submit", async(e) => {
+            btnSubmit?.setAttribute("disabled", "true");            
+            e.preventDefault();            
+            btnSubmit?.removeAttribute("disabled");
+            const formData = new FormData(form);    
+            const {error,data}= await actions.registerUser(formData);
+            if(error){
+                console.log(error.message);
+                return;
+            }
+            console.log(data);
+            
+        });
+        
+
+    </script>
+
