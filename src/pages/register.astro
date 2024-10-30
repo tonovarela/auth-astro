@@ -1,5 +1,12 @@
 ---
+
 import AuthLayout from "@/layout/AuthLayout.astro";
+
+
+const email = Astro.cookies.get("email")?.value;
+;
+const remember_me=!!email;
+console.log(remember_me );
 ---
 
 <AuthLayout title="Register">
@@ -18,7 +25,7 @@ import AuthLayout from "@/layout/AuthLayout.astro";
                         class="w-full text-base px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-400"
                         type="text"
                         name="name"
-                        placeholder="Varela"
+                        placeholder="Nombre"
                     />
                 </div>
                 <div class="space-y-2">
@@ -30,6 +37,7 @@ import AuthLayout from "@/layout/AuthLayout.astro";
                         class="w-full text-base px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-400"
                         type="text"
                         name="email"
+                        value={email}
                         placeholder="mail@gmail.com"
                     />
                 </div>
@@ -42,7 +50,7 @@ import AuthLayout from "@/layout/AuthLayout.astro";
                     <input
                     name="password"
                         class="w-full disabled:bg-gray-400 disabled:cursor-not-allowed content-center text-base px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-400"
-                        type="text"
+                        type="password"
                         placeholder="Enter your password"
                     />
                 </div>
@@ -51,6 +59,7 @@ import AuthLayout from "@/layout/AuthLayout.astro";
                         <input
                             id="remember_me"
                             name="remember_me"
+                            checked={remember_me}
                             type="checkbox"
                             class="h-4 w-4 bg-blue-500 focus:ring-blue-400 border-gray-300 rounded"
                         />
@@ -90,6 +99,7 @@ import AuthLayout from "@/layout/AuthLayout.astro";
     </div></AuthLayout>
 
     <script>
+import Swal from "sweetalert2";    
 import { actions } from "astro:actions";
 
         const form = document.querySelector("form") as HTMLFormElement;
@@ -98,14 +108,19 @@ import { actions } from "astro:actions";
         form.addEventListener("submit", async(e) => {
             btnSubmit?.setAttribute("disabled", "true");            
             e.preventDefault();            
-            btnSubmit?.removeAttribute("disabled");
+            
             const formData = new FormData(form);    
             const {error,data}= await actions.registerUser(formData);
             if(error){
-                console.log(error.message);
+                Swal.fire({
+                    icon: "error",
+                    title: "Authentication Error",                    
+                    text: error.message,
+                });
+                btnSubmit?.removeAttribute("disabled");
                 return;
-            }
-            console.log(data);
+            }                        
+            window.location.replace("/protected");
             
         });
         

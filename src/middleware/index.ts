@@ -18,4 +18,5 @@ export const onRequest = defineMiddleware((context,next) => {
                 'WWW-Authenticate': 'Basic realm="Secure Area"'
             } });        
     }    
+    return next();
 });
