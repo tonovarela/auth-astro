@@ -3,7 +3,7 @@ import AuthLayout from "@/layout/AuthLayout.astro";
 ---
 <AuthLayout title="Login">
     <div class="flex justify-center self-center  z-10">
-        <div class="p-12 bg-white mx-auto rounded-2xl w-100 ">
+        <form class="p-12 bg-white mx-auto rounded-2xl w-100 ">
             <div class="mb-4">
               <h3 class="font-semibold text-2xl text-gray-800">Sign In </h3>
               <p class="text-gray-500">Please sign in to your account.</p>
@@ -11,13 +11,13 @@ import AuthLayout from "@/layout/AuthLayout.astro";
             <div class="space-y-5">
                         <div class="space-y-2">
                               <label class="text-sm font-medium text-gray-700 tracking-wide">Email</label>
-              <input class=" w-full text-base px-4 py-2 border  border-gray-300 rounded-lg focus:outline-none focus:border-green-400" type="text" placeholder="mail@gmail.com">
+              <input name="email" class=" w-full text-base px-4 py-2 border  border-gray-300 rounded-lg focus:outline-none focus:border-green-400" type="text" placeholder="mail@gmail.com">
               </div>
                           <div class="space-y-2">
               <label class="mb-5 text-sm font-medium text-gray-700 tracking-wide">
                 Password
               </label>
-              <input class="w-full content-center text-base px-4 py-2 border  border-gray-300 rounded-lg focus:outline-none focus:border-green-400" type="text" placeholder="Enter your password">
+              <input name="password" class="w-full content-center text-base px-4 py-2 border  border-gray-300 rounded-lg focus:outline-none focus:border-green-400" type="text" placeholder="Enter your password">
             </div>
               <div class="flex items-center justify-between pb-4 ">
               <div class="flex items-center">
@@ -32,7 +32,7 @@ import AuthLayout from "@/layout/AuthLayout.astro";
               </div>
             </div>
             <div>
-              <button type="submit" class="w-full flex justify-center bg-blue-400  hover:bg-blue-500 text-gray-100 p-3  rounded-full tracking-wide font-semibold  shadow-lg cursor-pointer transition ease-in duration-500">
+              <button type="submit" id="btnsubmit" class="w-full flex justify-center bg-blue-400  hover:bg-blue-500 text-gray-100 p-3  rounded-full tracking-wide font-semibold  shadow-lg cursor-pointer transition ease-in duration-500">
                 Sign in
               </button>
             </div>
@@ -42,7 +42,31 @@ import AuthLayout from "@/layout/AuthLayout.astro";
                 Copyright  { new Date().getFullYear()}
                 
             </div>
-        </div>
+          </form>
       </div>
 </AuthLayout>
 
+<script>
+import { actions } from "astro:actions";
+import Swal from "sweetalert2";
+
+ const form = document.querySelector("form") as HTMLFormElement;
+ const btnSubmit = document.querySelector("#btnsubmit") as HTMLButtonElement; 
+ form.addEventListener("submit", async(e) => {
+  btnSubmit?.setAttribute("disabled", "true");            
+  e.preventDefault();  
+  const formData = new FormData(form);    
+            const {error}= await actions.login(formData);
+            if(error){
+                Swal.fire({
+                    icon: "error",
+                    title: "Authentication Error",                    
+                    text: error.message,
+                });
+                btnSubmit?.removeAttribute("disabled");
+                return;
+            }                        
+            window.location.replace("/protected");
+ });  
+
+  </script>

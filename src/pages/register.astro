@@ -1,10 +1,7 @@
 ---
 
 import AuthLayout from "@/layout/AuthLayout.astro";
-
-
 const email = Astro.cookies.get("email")?.value;
-;
 const remember_me=!!email;
 console.log(remember_me );
 ---
@@ -110,7 +107,7 @@ import { actions } from "astro:actions";
             e.preventDefault();            
             
             const formData = new FormData(form);    
-            const {error,data}= await actions.registerUser(formData);
+            const {error}= await actions.registerUser(formData);
             if(error){
                 Swal.fire({
                     icon: "error",

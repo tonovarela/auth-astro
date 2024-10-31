@@ -1,6 +1,7 @@
+import { firebase } from "@/firebase";
 import { defineAction } from "astro:actions";
 
-import { firebase } from "@/firebase";
+
 import { z } from "astro:schema";
 import { createUserWithEmailAndPassword, type AuthError } from "firebase/auth";
 
