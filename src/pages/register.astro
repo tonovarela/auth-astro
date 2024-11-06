@@ -3,7 +3,11 @@
 import AuthLayout from "@/layout/AuthLayout.astro";
 const email = Astro.cookies.get("email")?.value;
 const remember_me=!!email;
-console.log(remember_me );
+const isLogged = Astro.locals.isLoggedIn;
+if (isLogged) {
+    return Astro.redirect("/protected");
+}
+//console.log(remember_me );
 ---
 
 <AuthLayout title="Register">

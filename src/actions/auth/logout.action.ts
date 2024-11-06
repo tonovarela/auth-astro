@@ -9,8 +9,7 @@ import { signOut } from "firebase/auth";
 export const logout = defineAction({
     accept:'json',
     //input:z.string(),
-    handler:async (_,{cookies}) => {
-        
+    handler:async (_,{cookies}) => {        
         return await signOut(firebase.auth)
     }
 })

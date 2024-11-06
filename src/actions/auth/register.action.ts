@@ -3,7 +3,7 @@ import { defineAction } from "astro:actions";
 
 
 import { z } from "astro:schema";
-import { createUserWithEmailAndPassword, type AuthError } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile, type AuthError } from "firebase/auth";
 
 
 export const registerUser = defineAction({
@@ -14,8 +14,9 @@ export const registerUser = defineAction({
         password: z.string().min(6),
         remember_me: z.boolean().optional()
     }),
-    handler: async ({ password, email, remember_me }, context) => {
+    handler: async ({ password, email, remember_me, name }, context) => {
 
+        //#region  setCookies        
         if (remember_me) {
             context.cookies.set('email', email,
                 {
@@ -26,10 +27,18 @@ export const registerUser = defineAction({
         } else {
             context.cookies.delete('email', { path: '/' });
         }
+        // #endregion
+
 
         try {
             const user = await createUserWithEmailAndPassword(firebase.auth, email, password);
-            
+            updateProfile(firebase.auth.currentUser!, {
+                displayName: name
+            });
+            sendEmailVerification(firebase.auth.currentUser!,{
+                url: 'http://localhost:4321/protected?emailVerified=true'
+            });
+
             return JSON.stringify(user);
 
         } catch (e) {
@@ -40,7 +49,7 @@ export const registerUser = defineAction({
 
             throw new Error('Error registering user');
         }
-        
+
     }
 })
 

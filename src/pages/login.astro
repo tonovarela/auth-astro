@@ -1,72 +1,166 @@
 ---
+//import { firebase } from "@/firebase";
 import AuthLayout from "@/layout/AuthLayout.astro";
+
+const isLogged = Astro.locals.isLoggedIn;
+
+// const firebaseUser = firebase.auth.currentUser;
+if (isLogged) {
+   return Astro.redirect("/protected");
+ }
+ const email = Astro.cookies.get("email")?.value;
+const remember_me = !!email;
 ---
+
 <AuthLayout title="Login">
-    <div class="flex justify-center self-center  z-10">
-        <form class="p-12 bg-white mx-auto rounded-2xl w-100 ">
-            <div class="mb-4">
-              <h3 class="font-semibold text-2xl text-gray-800">Sign In </h3>
-              <p class="text-gray-500">Please sign in to your account.</p>
-            </div>
-            <div class="space-y-5">
-                        <div class="space-y-2">
-                              <label class="text-sm font-medium text-gray-700 tracking-wide">Email</label>
-              <input name="email" class=" w-full text-base px-4 py-2 border  border-gray-300 rounded-lg focus:outline-none focus:border-green-400" type="text" placeholder="mail@gmail.com">
-              </div>
-                          <div class="space-y-2">
-              <label class="mb-5 text-sm font-medium text-gray-700 tracking-wide">
-                Password
-              </label>
-              <input name="password" class="w-full content-center text-base px-4 py-2 border  border-gray-300 rounded-lg focus:outline-none focus:border-green-400" type="text" placeholder="Enter your password">
-            </div>
-              <div class="flex items-center justify-between pb-4 ">
-              <div class="flex items-center">
-                <input id="remember_me" name="remember_me" type="checkbox" class="h-4 w-4 bg-blue-500 focus:ring-blue-400 border-gray-300 rounded">
-                <label for="remember_me" class="ml-2 block text-sm text-gray-800">
-                  Recuerdame
-                </label>
-              </div>
-              <div class="text-sm">
-                <a href="/register" class="text-blue-400 hover:text-blue-500">
-                  No tienes cuenta?
-              </div>
-            </div>
-            <div>
-              <button type="submit" id="btnsubmit" class="w-full flex justify-center bg-blue-400  hover:bg-blue-500 text-gray-100 p-3  rounded-full tracking-wide font-semibold  shadow-lg cursor-pointer transition ease-in duration-500">
-                Sign in
-              </button>
-            </div>
-            </div>
-            <div class="pt-5 text-center text-gray-400 text-xs">
-              <span>
-                Copyright  { new Date().getFullYear()}
-                
-            </div>
-          </form>
+  <div class="flex justify-center self-center z-10">
+    <form class="p-12 bg-white mx-auto rounded-2xl w-100">
+      <div class="mb-4">
+        <h3 class="font-semibold text-2xl text-gray-800">Sign In</h3>
+        <p class="text-gray-500">Please sign in to your account.</p>
       </div>
-</AuthLayout>
+      <div class="space-y-5">
+        <div class="space-y-2">
+          <label class="text-sm font-medium text-gray-700 tracking-wide"
+            >Email</label
+          >
+          <input
+            name="email"
+            value={email}
+            class="w-full text-base px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-400"
+            type="text"
+            placeholder="mail@gmail.com"
+          />
+        </div>
+        <div class="space-y-2">
+          <label class="mb-5 text-sm font-medium text-gray-700 tracking-wide">
+            Password
+          </label>
+          <input
+            name="password"
+            class="w-full content-center text-base px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-green-400"
+            type="text"
+            placeholder="Enter your password"
+          />
+        </div>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <input
+              id="remember_me"
+              name="remember_me"
+              checked={remember_me}
+              type="checkbox"
+              class="h-4 w-4 bg-blue-500 focus:ring-blue-400 border-gray-300 rounded"
+            />
+            <label for="remember_me" class="ml-2 block text-sm text-gray-800">
+              Recuerdame
+            </label>
+          </div>
+          <div class="text-sm">
+            <a href="/register" class="text-blue-400 hover:text-blue-500">
+              No tienes cuenta?
+            </a>
+          </div>
+        </div>
+        <div>
+          <button
+            type="submit"
+            id="btnsubmit"
+            class="w-full flex
+              justify-center disabled:bg-gray-500 bg-blue-500 hover:bg-blue-600 text-gray-100 p-3 rounded-full tracking-wide font-semibold shadow-lg cursor-pointer transition ease-in duration-500"
+          >
+            Sign in
+          </button>
+          <div class="flex flex-1 w-full my-3">
+            <div class="w-full border-t-2 border-gray-500"></div>
+          </div>
+          <button
+            type="button"
+            id="btn-google"
+            class="w-full flex
+              gap-2
+              justify-center disabled:bg-gray-500 bg-gray-300 hover:bg-gray-400 hover:text-white text-black p-3 rounded-full tracking-wide font-semibold shadow-lg cursor-pointer transition ease-in duration-500"
+          >
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M21.35 11.1h-9.18v2.72h5.27c-.23 1.23-.92 2.27-1.95 2.95v2.44h3.14c1.84-1.7 2.91-4.2 2.91-7.11 0-.68-.07-1.34-.19-1.98z"
+                fill="#4285F4"></path>
+              <path
+                d="M12.17 22c2.62 0 4.82-.87 6.43-2.35l-3.14-2.44c-.87.58-1.97.93-3.29.93-2.53 0-4.67-1.71-5.43-4.01H3.49v2.52c1.61 3.18 4.91 5.35 8.68 5.35z"
+                fill="#34A853"></path>
+              <path
+                d="M6.74 13.13c-.2-.58-.31-1.2-.31-1.83s.11-1.25.31-1.83V7.95H3.49C2.73 9.35 2.34 10.93 2.34 12.5s.39 3.15 1.15 4.55l3.25-2.52z"
+                fill="#FBBC05"></path>
+              <path
+                d="M12.17 6.27c1.43 0 2.71.49 3.72 1.45l2.79-2.79C16.99 3.26 14.79 2 12.17 2 8.4 2 5.1 4.17 3.49 7.35l3.25 2.52c.76-2.3 2.9-4.01 5.43-4.01z"
+                fill="#EA4335"></path>
+            </svg>
+            Sign in with Google
+          </button>
+        </div>
+        <div class="pt-5 text-center text-gray-400 text-xs">
+          <span>
+            Copyright {new Date().getFullYear()}
+          </span>
+        </div>
+      </div>
+    </form>
 
-<script>
-import { actions } from "astro:actions";
-import Swal from "sweetalert2";
+    <script>
+      import { firebase } from "@/firebase";
+      import { actions } from "astro:actions";
+      import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+      import Swal from "sweetalert2";
 
- const form = document.querySelector("form") as HTMLFormElement;
- const btnSubmit = document.querySelector("#btnsubmit") as HTMLButtonElement; 
- form.addEventListener("submit", async(e) => {
-  btnSubmit?.setAttribute("disabled", "true");            
-  e.preventDefault();  
-  const formData = new FormData(form);    
-            const {error}= await actions.login(formData);
-            if(error){
-                Swal.fire({
-                    icon: "error",
-                    title: "Authentication Error",                    
-                    text: error.message,
-                });
-                btnSubmit?.removeAttribute("disabled");
-                return;
-            }                        
-            window.location.replace("/protected");
- });  
+      const form = document.querySelector("form") as HTMLFormElement;
+      const btnGoogle = document.querySelector(
+        "#btn-google",
+      ) as HTMLButtonElement;
+      const btnSubmit = document.querySelector(
+        "#btnsubmit",
+      ) as HTMLButtonElement;
 
-  </script>
+      //#region  Sign in with Email
+      form.addEventListener("submit", async (e) => {
+        btnSubmit?.setAttribute("disabled", "true");
+        e.preventDefault();
+        const formData = new FormData(form);
+        const { error } = await actions.login(formData);
+        if (error) {
+          Swal.fire({
+            icon: "error",
+            title: "Authentication Error",
+            text: error.message,
+          });
+          btnSubmit?.removeAttribute("disabled");
+          return;
+        }
+        window.location.replace("/protected");
+      });
+      //#endregion
+
+      //#region  Sign in with Google
+      btnGoogle.addEventListener("click", async () => {
+        btnGoogle?.setAttribute("disabled", "true");
+        const provider = new GoogleAuthProvider();
+        try {
+          // Obtener la credenciales del lado del cliente
+          const credentials = await signInWithPopup(firebase.auth, provider);
+          // Verificar si las credenciales son correctas        
+          await actions.loginWithGoogle(credentials);          
+          btnGoogle.innerText='Redirecting...';
+          window.location.href = '/';        
+
+        } catch (error: any) {
+          Swal.fire({
+            icon: "error",
+            title: "Authentication Error",
+            text: error.message,
+          });
+        }
+        btnGoogle?.setAttribute("disabled", "false");
+      });
+      //#endregion
+    </script>
+  </div></AuthLayout
+>

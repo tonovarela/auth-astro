@@ -1,14 +1,22 @@
 ---
-import { firebase } from "@/firebase";
+//import { firebase } from "@/firebase";
 import MainLayout from "../layout/MainLayout.astro";
-const firebaseUser = firebase.auth.currentUser;
-if (!firebaseUser) {
+
+const {user, isLoggedIn} = Astro.locals;
+
+if (!isLoggedIn || !user) {
     return Astro.redirect("/login");
 }
+const  {name, email, emailVerified, avatar:photoURL} = user;
 
-const { displayName, email, emailVerified, photoURL } = firebaseUser;
-const name = displayName ?? "No display provided";
-console.log(firebaseUser);
+// const firebaseUser = firebase.auth.currentUser;
+// if (!firebaseUser) {
+//     return Astro.redirect("/login");
+// }
+// await firebase.auth.currentUser?.reload();
+// const { displayName, email, emailVerified, photoURL } = firebaseUser;
+//const name = displayName ?? "No display provided";
+// console.log({ displayName, email, emailVerified, photoURL });
 ---
 
 <MainLayout title="Protected">
